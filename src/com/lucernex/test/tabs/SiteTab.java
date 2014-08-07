@@ -1,4 +1,4 @@
-package com.example.tests;
+package com.lucernex.test.tabs;
 
 import java.awt.List;
 import java.util.ArrayList;
@@ -19,50 +19,35 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
 
-public class Testing {
-	private WebDriver driver;
-	private String baseUrl;
+
+public class SiteTab extends com.lucernex.test.core.Test {
+
 	private boolean acceptNextAlert = true;
 	private StringBuffer verificationErrors = new StringBuffer();
 	private HashMap<String, String> expectedMap = new HashMap();
 	private HashMap<String, String> actualMap = new HashMap();
 	private WebElement key1, value1, key2, value2;
 
-	// Put elements to the map
-
-	@Before
-	public void setUp() throws Exception {
-		driver = new FirefoxDriver();
-		baseUrl = "http://train.lucernex.com/";
-		driver.manage().timeouts().implicitlyWait(22, TimeUnit.SECONDS);
+	private void setUpExpectedData(){
 		expectedMap.put("Name", "Shelbii Geo Code Test");
-		expectedMap.put("Region", "2");
+		expectedMap.put("Region", "1");
 		expectedMap.put("Portfolio", "Global");
-
 	}
+	
 
 	@Test
 	public void test() throws Exception {
-		driver.get(baseUrl + "en/login.jsp");
-		System.out
-				.println("Login page openend, now entering username and firm");
 
-		driver.findElement(By.name("authLoginName")).sendKeys("rootDev");
-		driver.findElement(By.name("authLoginFirmName")).clear();
-		driver.findElement(By.name("authLoginFirmName")).sendKeys("QA");
-		driver.findElement(By.cssSelector("input.loginbutton")).click();
-		System.out.println("Login page openend, now entering password");
-
-		driver.findElement(By.name("authPassword")).clear();
-		driver.findElement(By.name("authPassword")).sendKeys("lbjFr33way");
-		driver.findElement(By.cssSelector("input.loginbutton")).click();
-		System.out.println("now testing dashboard");
+		//doLogin();
+		setUpExpectedData();
 
 		String pageTitle = driver.getTitle();
 		assertEquals(pageTitle, "LxRetail");
+		driver.switchTo().defaultContent();
 
 		// Openeing Site tab
 		driver.findElement(By.id("m1_PotentialProject")).click();
+		Thread.sleep(1000);
 
 		System.out.println("Site tab opened");
 
@@ -147,7 +132,7 @@ public class Testing {
 					System.out.println("actual key,value : ("
 							+ actualPairs.getKey() + ","
 							+ actualPairs.getValue() + ")");
-					assertEquals(actualPairs.getValue(), expectedValue);
+					assertEquals( expectedValue,actualPairs.getValue());
 				}
 			}
 
@@ -155,45 +140,4 @@ public class Testing {
 
 	}
 
-	@After
-	public void tearDown() throws Exception {
-		driver.quit();
-		String verificationErrorString = verificationErrors.toString();
-		if (!"".equals(verificationErrorString)) {
-			fail(verificationErrorString);
-		}
-	}
-
-	private boolean isElementPresent(By by) {
-		try {
-			driver.findElement(by);
-			return true;
-		} catch (NoSuchElementException e) {
-			return false;
-		}
-	}
-
-	private boolean isAlertPresent() {
-		try {
-			driver.switchTo().alert();
-			return true;
-		} catch (NoAlertPresentException e) {
-			return false;
-		}
-	}
-
-	private String closeAlertAndGetItsText() {
-		try {
-			Alert alert = driver.switchTo().alert();
-			String alertText = alert.getText();
-			if (acceptNextAlert) {
-				alert.accept();
-			} else {
-				alert.dismiss();
-			}
-			return alertText;
-		} finally {
-			acceptNextAlert = true;
-		}
-	}
 }
